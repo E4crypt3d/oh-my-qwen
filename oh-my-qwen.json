@@ -1,0 +1,155 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
+  "_comment": "oh-my-qwen configuration — adapted from oh-my-openagent for Qwen Code CLI",
+  "_note": "All agents work on Qwen OAuth free tier (1,000 req/day) or Qwen API key",
+  "_auth": "qwen-oauth (browser OAuth, auto-refresh) or DASHSCOPE_API_KEY",
+
+  "agents": {
+    "sisyphus": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/sisyphus.md",
+      "description": "Main ultrawork orchestrator — intent analysis, task decomposition, parallel agent delegation, result aggregation",
+      "tools": ["read_file", "write_file", "read_many_files", "run_shell_command", "grep_search", "glob", "web_search", "edit"]
+    },
+    "prometheus": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/prometheus.md",
+      "description": "Strategic planner — interview-mode planning, Decision Complete principle, phased execution roadmaps",
+      "tools": ["read_file", "read_many_files", "write_file", "grep_search", "glob"]
+    },
+    "hephaestus": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/hephaestus.md",
+      "description": "Deep autonomous implementation worker — goal-oriented, end-to-end execution without hand-holding",
+      "tools": ["read_file", "write_file", "read_many_files", "run_shell_command", "grep_search", "glob", "edit"]
+    },
+    "atlas": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/atlas.md",
+      "description": "Architecture analyst — separation of concerns, coupling analysis, dependency mapping, extensibility assessment",
+      "tools": ["read_file", "read_many_files", "grep_search", "glob", "list_directory"]
+    },
+    "explore": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/explore.md",
+      "description": "Fast codebase researcher — symbol finding, module mapping, architecture exploration",
+      "tools": ["read_file", "read_many_files", "grep_search", "glob", "list_directory", "web_search"]
+    },
+    "librarian": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/librarian.md",
+      "description": "Documentation specialist and external reference lookup — READMEs, API docs, AGENTS.md generation, library research",
+      "tools": ["read_file", "write_file", "read_many_files", "edit", "web_search"]
+    },
+    "oracle": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/oracle.md",
+      "description": "High-IQ consultant — complex architecture decisions, deep debugging, security/performance analysis, multi-system tradeoffs",
+      "tools": ["read_file", "read_many_files", "grep_search", "glob"]
+    },
+    "metis": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/metis.md",
+      "description": "Pre-planning consultant — ambiguity detection, intent extraction, risk assessment before implementation",
+      "tools": ["read_file", "read_many_files", "grep_search", "glob"]
+    },
+    "momus": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/momus.md",
+      "description": "Expert reviewer — plan evaluation, post-implementation review, gap detection, quality gates",
+      "tools": ["read_file", "read_many_files", "grep_search", "glob", "run_shell_command"]
+    },
+    "multimodal-looker": {
+      "model": "qwen/vision-model",
+      "file": "~/.qwen/agents/multimodal-looker.md",
+      "description": "Vision and media specialist — image analysis, PDF extraction, diagram understanding, screenshot reading",
+      "tools": ["read_file", "web_search"]
+    },
+    "code-reviewer": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/code-reviewer.md",
+      "description": "Quality gate — multi-level code review for correctness, security, performance, maintainability",
+      "tools": ["read_file", "read_many_files", "grep_search", "glob"]
+    },
+    "testing-expert": {
+      "model": "qwen/coder-model",
+      "file": "~/.qwen/agents/testing-expert.md",
+      "description": "Test specialist — TDD, comprehensive coverage, mocking strategies, test infrastructure",
+      "tools": ["read_file", "write_file", "read_many_files", "run_shell_command", "grep_search", "glob", "edit"]
+    }
+  },
+
+  "categories": {
+    "ultrabrain": {
+      "model": "qwen/coder-model",
+      "fallback": ["qwen/coder-model"],
+      "description": "Deep logical reasoning, complex architecture decisions"
+    },
+    "deep": {
+      "model": "qwen/coder-model",
+      "fallback": ["qwen/coder-model"],
+      "description": "Autonomous problem-solving, thorough research"
+    },
+    "quick": {
+      "model": "qwen/coder-model",
+      "fallback": ["qwen/coder-model"],
+      "description": "Trivial tasks, typo fixes, single-file changes"
+    },
+    "visual-engineering": {
+      "model": "qwen/vision-model",
+      "fallback": ["qwen/coder-model"],
+      "description": "Frontend, UI/UX, design, animation"
+    },
+    "writing": {
+      "model": "qwen/coder-model",
+      "fallback": ["qwen/coder-model"],
+      "description": "Documentation, prose, technical writing"
+    },
+    "testing": {
+      "model": "qwen/coder-model",
+      "fallback": ["qwen/coder-model"],
+      "description": "Test creation, coverage, test infrastructure"
+    },
+    "review": {
+      "model": "qwen/coder-model",
+      "fallback": ["qwen/coder-model"],
+      "description": "Code review, quality audit"
+    }
+  },
+
+  "background_task": {
+    "provider": "qwen-oauth",
+    "max_concurrent_per_model": 5,
+    "max_concurrent_per_provider": 5,
+    "circuit_breaker": true
+  },
+
+  "skills": {
+    "ultrawork": "~/.qwen/skills/ultrawork/SKILL.md",
+    "team-run": "~/.qwen/skills/team-run/SKILL.md",
+    "code-review": "~/.qwen/skills/code-review/SKILL.md",
+    "testing": "~/.qwen/skills/testing/SKILL.md",
+    "documentation": "~/.qwen/skills/documentation/SKILL.md",
+    "git-master": "~/.qwen/skills/git-master/SKILL.md",
+    "frontend-ui-ux": "~/.qwen/skills/frontend-ui-ux/SKILL.md",
+    "ai-slop-remover": "~/.qwen/skills/ai-slop-remover/SKILL.md"
+  },
+
+  "mcp": {
+    "websearch": {
+      "enabled": true,
+      "provider": "exa",
+      "note": "Web search via Exa AI — set EXA_API_KEY or use Qwen's built-in web_search tool"
+    },
+    "context7": {
+      "enabled": true,
+      "note": "Official library docs — uses context7 MCP for up-to-date API documentation"
+    },
+    "grep_app": {
+      "enabled": true,
+      "note": "GitHub code search — finds real-world code examples from public repositories"
+    }
+  },
+
+  "state_dir": "~/.omg/state"
+}

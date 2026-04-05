@@ -73,7 +73,7 @@ fi
 
 # 4. Check subagents
 AGENT_DIR="$QWEN_DIR/agents"
-EXPECTED_AGENTS=("sisyphus" "prometheus" "hephaestus" "atlas" "explore" "librarian" "code-reviewer" "testing-expert")
+EXPECTED_AGENTS=("sisyphus" "prometheus" "hephaestus" "atlas" "explore" "librarian" "oracle" "metis" "momus" "multimodal-looker" "code-reviewer" "testing-expert")
 FOUND_AGENTS=()
 
 if [[ -d "$AGENT_DIR" ]]; then
@@ -100,7 +100,7 @@ fi
 
 # 5. Check skills
 SKILL_DIR="$QWEN_DIR/skills"
-SKILLS=("ultrawork" "team-run" "code-review" "testing" "documentation")
+SKILLS=("ultrawork" "team-run" "code-review" "testing" "documentation" "git-master" "frontend-ui-ux" "ai-slop-remover")
 INSTALLED_SKILLS=()
 
 if [[ -d "$SKILL_DIR" ]]; then
@@ -157,4 +157,5 @@ fi
 
 echo ""
 echo "oMoMoMoMo Ready! Include 'ultrawork' or 'ulw' in your prompt."
+echo "12 agents • 8 skills • qwen-oauth free tier"
 exit 0
