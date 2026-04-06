@@ -187,9 +187,13 @@ bash ~/.qwen/scripts/oh-my-qwen-models.sh
 ## Uninstall
 
 ```bash
-rm -rf ~/.qwen/agents ~/.qwen/skills ~/.qwen/scripts ~/.qwen/oh-my-qwen.json ~/.qwen/QWEN.md
-rm -rf ~/.omg
+bash ~/.qwen/scripts/uninstall.sh
 ```
+
+This will:
+- Restore all backed up original files
+- Remove all oh-my-qwen installed files (agents, skills, scripts, configs)
+- Preserve your `settings.json`
 
 Your `settings.json` is preserved — remove it manually if desired.
 

@@ -9,10 +9,22 @@ NC='\033[0m'
 
 QWEN_DIR="$HOME/.qwen"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BACKUP_DIR="$QWEN_DIR/.backup"
 
 pass() { echo -e "  ${GREEN}✓${NC} $1"; }
 warn() { echo -e "  ${YELLOW}⚠${NC} $1"; }
 info() { echo -e "  ${CYAN}→${NC} $1"; }
+
+backup_existing() {
+    local file="$1"
+    local rel_path="${file#$QWEN_DIR/}"
+    if [[ -f "$file" ]]; then
+        local backup_path="$BACKUP_DIR/$rel_path"
+        mkdir -p "$(dirname "$backup_path")"
+        cp "$file" "$backup_path"
+        info "Backed up: $rel_path"
+    fi
+}
 
 echo -e "${CYAN}"
 echo " oMoMoMoMo oh-my-qwen installer"
@@ -35,6 +47,30 @@ else
   exit 1
 fi
 info "Python detected: $PYTHON_CMD"
+
+info "Creating backup directory..."
+mkdir -p "$BACKUP_DIR"
+
+info "Backing up existing files..."
+backup_existing "$QWEN_DIR/settings.json"
+backup_existing "$QWEN_DIR/oh-my-qwen.json"
+backup_existing "$QWEN_DIR/QWEN.md"
+if [[ -d "$QWEN_DIR/agents" ]]; then
+    for f in "$QWEN_DIR/agents"/*.md; do
+        [[ -f "$f" ]] && backup_existing "$f"
+    done
+fi
+if [[ -d "$QWEN_DIR/skills" ]]; then
+    for f in "$QWEN_DIR/skills"/*/SKILL.md; do
+        [[ -f "$f" ]] && backup_existing "$f"
+    done
+fi
+if [[ -d "$QWEN_DIR/scripts" ]]; then
+    for f in "$QWEN_DIR/scripts"/*.sh; do
+        [[ -f "$f" ]] && backup_existing "$f"
+    done
+fi
+pass "Backup complete"
 
 info "Creating directories..."
 mkdir -p "$QWEN_DIR/agents"
