@@ -135,21 +135,5 @@
     "ai-slop-remover": "~/.qwen/skills/ai-slop-remover/SKILL.md"
   },
 
-  "mcp": {
-    "websearch": {
-      "enabled": true,
-      "provider": "exa",
-      "note": "Web search via Exa AI — set EXA_API_KEY or use Qwen's built-in web_search tool"
-    },
-    "context7": {
-      "enabled": true,
-      "note": "Official library docs — uses context7 MCP for up-to-date API documentation"
-    },
-    "grep_app": {
-      "enabled": true,
-      "note": "GitHub code search — finds real-world code examples from public repositories"
-    }
-  },
-
   "state_dir": "~/.omg/state"
 }
