@@ -128,6 +128,10 @@ if 'modelProviders' not in settings:
         ]
     }
 
+if 'model' not in settings:
+    settings['model'] = {}
+settings['model']['name'] = 'coder-model'
+
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
@@ -145,7 +149,6 @@ else
   "model": {
     "name": "coder-model"
   },
-  "$version": 3,
   "modelProviders": {
     "qwen-oauth": [
       {
