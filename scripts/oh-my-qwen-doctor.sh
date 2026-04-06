@@ -21,9 +21,17 @@ echo ""
 
 QWEN_DIR="$HOME/.qwen"
 
+if command -v python3 &>/dev/null; then
+  PYTHON_CMD="python3"
+elif command -v python &>/dev/null; then
+  PYTHON_CMD="python"
+else
+  fail "Python not found — install Python 3.6+"
+fi
+
 # 1. Check auth type is qwen-oauth
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
-  AUTH_TYPE=$(python3 -c "
+  AUTH_TYPE=$($PYTHON_CMD -c "
 import json
 d = json.load(open('$QWEN_DIR/settings.json'))
 print(d.get('security',{}).get('auth',{}).get('selectedType', 'none'))
@@ -40,7 +48,7 @@ fi
 
 # 2. Check modelProviders configured correctly
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
-  PROVIDER_INFO=$(python3 -c "
+  PROVIDER_INFO=$($PYTHON_CMD -c "
 import json, sys
 d = json.load(open('$QWEN_DIR/settings.json'))
 providers = d.get('modelProviders', {})
@@ -60,9 +68,9 @@ fi
 
 # 3. Check oh-my-qwen.json helper config
 if [[ -f "$QWEN_DIR/oh-my-qwen.json" ]]; then
-  if python3 -c "import json; json.load(open('$QWEN_DIR/oh-my-qwen.json'))" 2>/dev/null; then
+  if $PYTHON_CMD -c "import json; json.load(open('$QWEN_DIR/oh-my-qwen.json'))" 2>/dev/null; then
     pass "oh-my-qwen.json valid"
-    AGENT_COUNT=$(python3 -c "import json; d=json.load(open('$QWEN_DIR/oh-my-qwen.json')); print(len(d.get('agents',{})))" 2>/dev/null || echo 0)
+    AGENT_COUNT=$($PYTHON_CMD -c "import json; d=json.load(open('$QWEN_DIR/oh-my-qwen.json')); print(len(d.get('agents',{})))" 2>/dev/null || echo 0)
     pass "$AGENT_COUNT agents configured"
   else
     fail "oh-my-qwen.json has invalid JSON"

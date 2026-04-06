@@ -26,6 +26,16 @@ fi
 QWEN_VER=$(qwen --version 2>/dev/null || echo "unknown")
 info "qwen detected: $QWEN_VER"
 
+if command -v python3 &>/dev/null; then
+  PYTHON_CMD="python3"
+elif command -v python &>/dev/null; then
+  PYTHON_CMD="python"
+else
+  echo -e "${RED}✗ Python not found. Install Python 3.6+ first.${NC}"
+  exit 1
+fi
+info "Python detected: $PYTHON_CMD"
+
 info "Creating directories..."
 mkdir -p "$QWEN_DIR/agents"
 mkdir -p "$QWEN_DIR/skills/ultrawork"
@@ -74,7 +84,7 @@ pass "$SCRIPT_COUNT scripts installed"
 
 info "Configuring settings.json..."
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
-  HAS_PROVIDERS=$(python3 -c "
+  HAS_PROVIDERS=$($PYTHON_CMD -c "
 import json
 try:
     d = json.load(open('$QWEN_DIR/settings.json'))
@@ -90,7 +100,7 @@ except:
   if [[ "$HAS_PROVIDERS" == "yes" ]]; then
     warn "modelProviders already configured — skipping"
   else
-    python3 -c "
+    $PYTHON_CMD -c "
 import json
 settings_path = '$QWEN_DIR/settings.json'
 try:

@@ -6,6 +6,8 @@ Uses Qwen Code's **native subagent system** (`~/.qwen/agents/*.md` with YAML fro
 
 ## Quick Install
 
+> **Supported platforms:** Linux, macOS, Windows (via Git Bash, WSL, or Cygwin)
+
 ```bash
 git clone https://github.com/E4crypt3d/oh-my-qwen.git
 cd oh-my-qwen

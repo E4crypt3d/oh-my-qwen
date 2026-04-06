@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# oh-my-qwen model-resolution — show effective model for each agent/category
 set -euo pipefail
 
 CYAN='\033[0;36m'
@@ -9,13 +8,22 @@ NC='\033[0m'
 CONFIG="$HOME/.qwen/oh-my-qwen.json"
 SETTINGS="$HOME/.qwen/settings.json"
 
+if command -v python3 &>/dev/null; then
+  PYTHON_CMD="python3"
+elif command -v python &>/dev/null; then
+  PYTHON_CMD="python"
+else
+  echo "Error: Python not found"
+  exit 1
+fi
+
 echo -e "${CYAN} oMoMoMoMo Model Resolution${NC}"
 echo ""
 
 # Model Providers from settings.json
 echo -e "${GREEN}── Model Providers (settings.json) ───────────────${NC}"
 if [[ -f "$SETTINGS" ]]; then
-  python3 -c "
+  $PYTHON_CMD -c "
 import json
 settings = json.load(open('$SETTINGS'))
 providers = settings.get('modelProviders', {})
@@ -37,7 +45,7 @@ if [[ -f "$CONFIG" ]]; then
   printf "  %-20s %-30s %s\n" "AGENT" "MODEL" "ROLE"
   printf "  %-20s %-30s %s\n" "────────────────────" "──────────────────────────────" "──────────────────"
 
-  python3 -c "
+  $PYTHON_CMD -c "
 import json
 config = json.load(open('$CONFIG'))
 for name, agent in config.get('agents', {}).items():
@@ -54,7 +62,7 @@ if [[ -f "$CONFIG" ]]; then
   printf "  %-20s %-30s %s\n" "CATEGORY" "PRIMARY" "FALLBACK CHAIN"
   printf "  %-20s %-30s %s\n" "────────────────────" "──────────────────────────────" "──────────────────"
 
-  python3 -c "
+  $PYTHON_CMD -c "
 import json
 config = json.load(open('$CONFIG'))
 for name, cat in config.get('categories', {}).items():
