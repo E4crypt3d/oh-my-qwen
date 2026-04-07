@@ -154,12 +154,6 @@ if 'modelProviders' not in settings:
                 'id': 'coder-model',
                 'name': 'Qwen Coder Model',
                 'description': 'Primary coder model via Qwen OAuth free tier (1,000 req/day)'
-            },
-            {
-                'id': 'vision-model',
-                'name': 'Qwen Vision Model',
-                'description': 'Vision-language model for UI/visual analysis',
-                'capabilities': { 'vision': True }
             }
         ]
     }
@@ -191,14 +185,6 @@ else
         "id": "coder-model",
         "name": "Qwen Coder Model",
         "description": "Primary coder model via Qwen OAuth free tier (1,000 req/day)"
-      },
-      {
-        "id": "vision-model",
-        "name": "Qwen Vision Model",
-        "description": "Vision-language model for UI/visual analysis",
-        "capabilities": {
-          "vision": true
-        }
       }
     ]
   }
