@@ -147,10 +147,9 @@ settings_path = '$QWEN_DIR/settings.json'
 with open(settings_path) as f:
     settings = json.load(f)
 settings['mcpServers'] = {
-    'context7': {
+'context7': {
         'httpUrl': 'https://mcp.context7.com/mcp',
         'headers': {
-            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
             'Accept': 'application/json, text/event-stream'
         }
     },
@@ -158,6 +157,7 @@ settings['mcpServers'] = {
         'httpUrl': 'https://mcp.grep.app'
     }
 }
+
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
@@ -194,7 +194,6 @@ settings['mcpServers'] = {
     'context7': {
         'httpUrl': 'https://mcp.context7.com/mcp',
         'headers': {
-            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
             'Accept': 'application/json, text/event-stream'
         }
     },
@@ -233,7 +232,6 @@ else
     "context7": {
       "httpUrl": "https://mcp.context7.com/mcp",
       "headers": {
-        "CONTEXT7_API_KEY": "YOUR_API_KEY",
         "Accept": "application/json, text/event-stream"
       }
     },
