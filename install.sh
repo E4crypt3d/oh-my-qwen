@@ -125,17 +125,45 @@ import json
 try:
     d = json.load(open('$QWEN_DIR/settings.json'))
     providers = d.get('modelProviders', {})
-    if providers:
-        print('yes')
+    mcps = d.get('mcpServers', {})
+    if providers and mcps:
+        print('both')
+    elif providers:
+        print('providers')
+    elif mcps:
+        print('mcps')
     else:
         print('no')
 except:
     print('no')
 " 2>/dev/null || echo "no")
 
-  if [[ "$HAS_PROVIDERS" == "yes" ]]; then
-    warn "modelProviders already configured — skipping"
-  else
+  if [[ "$HAS_PROVIDERS" == "both" ]]; then
+    warn "modelProviders and mcpServers already configured — skipping"
+  elif [[ "$HAS_PROVIDERS" == "providers" ]]; then
+    $PYTHON_CMD -c "
+import json
+settings_path = '$QWEN_DIR/settings.json'
+with open(settings_path) as f:
+    settings = json.load(f)
+settings['mcpServers'] = {
+    'context7': {
+        'httpUrl': 'https://mcp.context7.com/mcp',
+        'headers': {
+            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
+            'Accept': 'application/json, text/event-stream'
+        }
+    },
+    'gh_grep': {
+        'httpUrl': 'https://mcp.grep.app'
+    }
+}
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2)
+    f.write('\n')
+"
+    pass "mcpServers added to existing settings.json"
+  elif [[ "$HAS_PROVIDERS" == "mcps" ]]; then
     $PYTHON_CMD -c "
 import json
 settings_path = '$QWEN_DIR/settings.json'
@@ -162,6 +190,19 @@ if 'model' not in settings:
     settings['model'] = {}
 settings['model']['name'] = 'coder-model'
 
+settings['mcpServers'] = {
+    'context7': {
+        'httpUrl': 'https://mcp.context7.com/mcp',
+        'headers': {
+            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
+            'Accept': 'application/json, text/event-stream'
+        }
+    },
+    'gh_grep': {
+        'httpUrl': 'https://mcp.grep.app'
+    }
+}
+
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
@@ -187,6 +228,18 @@ else
         "description": "Primary coder model via Qwen OAuth free tier (1,000 req/day)"
       }
     ]
+  },
+  "mcpServers": {
+    "context7": {
+      "httpUrl": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "YOUR_API_KEY",
+        "Accept": "application/json, text/event-stream"
+      }
+    },
+    "gh_grep": {
+      "httpUrl": "https://mcp.grep.app"
+    }
   }
 }
 SETTINGS_EOF
@@ -211,7 +264,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   if [[ -n "$CONTEXT7_API_KEY" ]]; then
     $PYTHON_CMD -c "
 import json
-settings_path = '$QWEN_DIR/oh-my-qwen.json'
+settings_path = '$QWEN_DIR/settings.json'
 with open(settings_path) as f:
     settings = json.load(f)
 settings['mcpServers']['context7']['headers']['CONTEXT7_API_KEY'] = '$CONTEXT7_API_KEY'
