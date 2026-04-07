@@ -88,6 +88,32 @@ oh-my-qwen includes **Grep by Vercel MCP** for searching code across 1M+ public 
 
 Usage: The explore agent will use gh_grep to find code patterns and examples from real repositories.
 
+### Optional: OtterSight Security Scanner
+
+Security vulnerability scanner using Syft + Grype + CISA KEV + EUVD.
+
+| Feature | Description |
+|---|---|
+| **Type** | Local MCP server (requires Syft + Grype) |
+| **Package** | `@ottersight/mcp` |
+
+**Setup:**
+
+```bash
+# Install prerequisites first
+# macOS: brew install anchore/syft/syft anchore/grype/grype
+# Linux: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+
+# Add MCP to Qwen Code
+bash ~/.qwen/scripts/ottersight.sh
+```
+
+Or use directly without MCP:
+```bash
+npx @ottersight/cli scan .
+docker run --rm -v $(pwd):/repo ghcr.io/ottersight/cli scan .
+```
+
 ### Model Configuration
 
 All agents work on **qwen-oauth** free tier — no API keys, no paid subscriptions:
