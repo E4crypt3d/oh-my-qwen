@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# OtterSight MCP Setup for Qwen Code
+# Credit: https://github.com/Ottersight/ottersight-cli
 set -euo pipefail
 
 GREEN='\033[0;32m'
