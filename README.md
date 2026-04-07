@@ -37,7 +37,7 @@ That's it. Everything is configured.
 | **oracle** | High-IQ consultant — architecture decisions, deep debugging, security analysis | coder-model |
 | **metis** | Pre-planning consultant — ambiguity detection, intent extraction, risk assessment | coder-model |
 | **momus** | Expert reviewer — plan validation, post-implementation review, gap detection | coder-model |
-| **multimodal-looker** | Vision/media specialist — image analysis, PDF extraction, diagram understanding | vision-model |
+| **multimodal-looker** | Vision/media specialist — image analysis, PDF extraction, diagram understanding | coder-model |
 | **code-reviewer** | Quality gate — multi-level review for correctness, security, performance | coder-model |
 | **testing-expert** | Test specialist — TDD, comprehensive coverage, mocking strategies | coder-model |
 
@@ -81,7 +81,6 @@ The librarian agent will automatically use Context7 to fetch docs and code examp
 All agents work on **qwen-oauth** free tier — no API keys, no paid subscriptions:
 
 - **coder-model** — All code, reasoning, implementation, orchestration
-- **vision-model** — UI analysis, image understanding, media processing
 
 > **Free tier quota:** 1,000 requests/day, 60 req/min. No credit card required.
 >

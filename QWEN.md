@@ -49,8 +49,7 @@ Trigger: Single-file changes, typo fixes, simple modifications.
 ## Model Configuration
 
 All agents run on **qwen-oauth** free tier by default:
-- **coder-model** — All code, reasoning, implementation
-- **vision-model** — UI analysis, image understanding
+- **coder-model** — All code, reasoning, implementation (text + image support)
 
 > **Quota:** 1,000 requests/day, 60 req/min. No credit card required.
 > API key users: Set DASHSCOPE_API_KEY for higher limits.

@@ -60,7 +60,7 @@
       "tools": ["read_file", "read_many_files", "grep_search", "glob", "run_shell_command"]
     },
     "multimodal-looker": {
-      "model": "qwen/vision-model",
+      "model": "qwen/coder-model",
       "file": "~/.qwen/agents/multimodal-looker.md",
       "description": "Vision and media specialist — image analysis, PDF extraction, diagram understanding, screenshot reading",
       "tools": ["read_file", "web_search"]
@@ -96,7 +96,7 @@
       "description": "Trivial tasks, typo fixes, single-file changes"
     },
     "visual-engineering": {
-      "model": "qwen/vision-model",
+      "model": "qwen/coder-model",
       "fallback": ["qwen/coder-model"],
       "description": "Frontend, UI/UX, design, animation"
     },
