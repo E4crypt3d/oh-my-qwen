@@ -209,7 +209,35 @@ fi
 
 info "Writing oh-my-qwen.json..."
 cp "$SCRIPT_DIR/oh-my-qwen.json" "$QWEN_DIR/oh-my-qwen.json"
-pass "oh-my-qwen.json configured"
+pass "oh-my-qwen.json configured (including Context7 MCP)"
+
+echo ""
+echo -e "${CYAN}────────────────────────────────────────${NC}"
+echo -e "${CYAN}  Context7 MCP Configuration (optional) ${NC}"
+echo -e "${CYAN}────────────────────────────────────────${NC}"
+echo "  Context7 works without an API key (basic limits)."
+echo "  With an API key: higher rate limits + private repos."
+echo ""
+read -p "  Do you have a Context7 API key? (y/N): " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  read -p "  Enter your Context7 API key: " CONTEXT7_API_KEY
+  if [[ -n "$CONTEXT7_API_KEY" ]]; then
+    $PYTHON_CMD -c "
+import json
+settings_path = '$QWEN_DIR/oh-my-qwen.json'
+with open(settings_path) as f:
+    settings = json.load(f)
+settings['mcpServers']['context7']['headers']['CONTEXT7_API_KEY'] = '$CONTEXT7_API_KEY'
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2)
+    f.write('\n')
+"
+    pass "Context7 API key configured"
+  fi
+else
+  info "Using Context7 free tier (no API key required)"
+fi
 
 info "Writing QWEN.md global context..."
 cp "$SCRIPT_DIR/QWEN.md" "$QWEN_DIR/QWEN.md"
@@ -219,6 +247,7 @@ echo ""
 echo "┌─ Installation Complete ───────────────────────────────────────┐"
 echo "│                                                               │"
 echo "│  $AGENT_COUNT subagents  •  $SKILL_COUNT skills  •  $SCRIPT_COUNT scripts   │"
+echo "│  Context7 MCP: Enabled                                        │"
 echo "│                                                               │"
 echo "│  Auth: qwen-oauth (free — 1,000 requests/day)                │"
 echo "│  API Key: Set DASHSCOPE_API_KEY for higher limits             │"

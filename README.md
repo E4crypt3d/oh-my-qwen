@@ -54,6 +54,28 @@ That's it. Everything is configured.
 | **frontend-ui-ux** | "design", "UI", "style", "layout" | Design-first frontend development, accessibility |
 | **ai-slop-remover** | "clean up AI code", "remove AI slop" | Remove AI-generated code smells, make code senior-level |
 
+### Context7 MCP (Built-in)
+
+oh-my-qwen includes **Context7 MCP** for up-to-date documentation and code examples directly from official sources.
+
+| Feature | Description |
+|---|---|
+| **Type** | Remote MCP server |
+| **Endpoint** | `https://mcp.context7.com/mcp` |
+| **Tools** | `query-docs`, `resolve-library-id` |
+
+**Usage:**
+
+- **Without API key** — Works with basic rate limits (lower usage)
+- **With API key** — Higher rate limits + private repo access
+
+**Setup:**
+1. (Optional) Get your Context7 API key from [context7.com](https://context7.com) for higher limits
+2. Edit `~/.qwen/oh-my-qwen.json` and replace `YOUR_API_KEY` with your key (or leave as-is for free tier)
+3. Restart Qwen Code
+
+The librarian agent will automatically use Context7 to fetch docs and code examples for any library.
+
 ### Model Configuration
 
 All agents work on **qwen-oauth** free tier — no API keys, no paid subscriptions:
@@ -130,7 +152,7 @@ bash ~/.qwen/scripts/oh-my-qwen-models.sh
 ```
 ~/.qwen/
 ├── settings.json                 ← qwen-oauth model providers (auto-configured)
-├── oh-my-qwen.json               ← agent/category/skill mapping
+├── oh-my-qwen.json               ← agent/category/skill/mcp mapping (includes Context7)
 ├── QWEN.md                       ← global orchestration context
 ├── agents/                       ← 12 subagents (YAML frontmatter .md files)
 │   ├── sisyphus.md
