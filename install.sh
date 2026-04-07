@@ -120,27 +120,27 @@ pass "$SCRIPT_COUNT scripts installed"
 
 info "Configuring settings.json..."
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
-  HAS_PROVIDERS=$($PYTHON_CMD -c "
+  CHECK_RESULT=$($PYTHON_CMD -c "
 import json
 try:
     d = json.load(open('$QWEN_DIR/settings.json'))
-    providers = d.get('modelProviders', {})
-    mcps = d.get('mcpServers', {})
-    if providers and mcps:
+    has_providers = 'modelProviders' in d and d['modelProviders']
+    has_mcps = 'mcpServers' in d and d['mcpServers']
+    if has_providers and has_mcps:
         print('both')
-    elif providers:
+    elif has_providers:
         print('providers')
-    elif mcps:
+    elif has_mcps:
         print('mcps')
     else:
-        print('no')
-except:
-    print('no')
-" 2>/dev/null || echo "no")
+        print('missing')
+except Exception as e:
+    print('error')
+" 2>/dev/null || echo "error")
 
-  if [[ "$HAS_PROVIDERS" == "both" ]]; then
+  if [[ "$CHECK_RESULT" == "both" ]]; then
     warn "modelProviders and mcpServers already configured — skipping"
-  elif [[ "$HAS_PROVIDERS" == "providers" ]]; then
+  elif [[ "$CHECK_RESULT" == "providers" ]]; then
     $PYTHON_CMD -c "
 import json
 settings_path = '$QWEN_DIR/settings.json'
@@ -163,7 +163,7 @@ with open(settings_path, 'w') as f:
     f.write('\n')
 "
     pass "mcpServers added to existing settings.json"
-  elif [[ "$HAS_PROVIDERS" == "mcps" ]]; then
+  elif [[ "$CHECK_RESULT" == "mcps" ]]; then
     $PYTHON_CMD -c "
 import json
 settings_path = '$QWEN_DIR/settings.json'
