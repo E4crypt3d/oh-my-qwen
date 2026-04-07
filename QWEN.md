@@ -54,6 +54,17 @@ All agents run on **qwen-oauth** free tier by default:
 > **Quota:** 1,000 requests/day, 60 req/min. No credit card required.
 > API key users: Set DASHSCOPE_API_KEY for higher limits.
 
+## MCP Tools (Built-in)
+
+Qwen Code has MCP tools available for documentation and code search:
+
+| MCP | Tools | When to Use |
+|-----|-------|-------------|
+| **context7** | query-docs, resolve-library-id | Library docs, API examples |
+| **gh_grep** | grep/search | Code patterns from GitHub |
+
+**Usage:** Agents automatically use these when searching docs or code. No special trigger needed — just ask questions like "how do I use X" or "find examples of Y".
+
 ## Operational Rules
 
 ### Intent Gate
