@@ -76,6 +76,18 @@ oh-my-qwen includes **Context7 MCP** for up-to-date documentation and code examp
 
 The librarian agent will automatically use Context7 to fetch docs and code examples for any library.
 
+### Grep by Vercel MCP (Built-in)
+
+oh-my-qwen includes **Grep by Vercel MCP** for searching code across 1M+ public GitHub repositories.
+
+| Feature | Description |
+|---|---|
+| **Type** | Remote MCP server |
+| **Endpoint** | `https://mcp.grep.app` |
+| **API Key** | Not required (free) |
+
+Usage: The explore agent will use gh_grep to find code patterns and examples from real repositories.
+
 ### Model Configuration
 
 All agents work on **qwen-oauth** free tier — no API keys, no paid subscriptions:

@@ -144,6 +144,9 @@
         "CONTEXT7_API_KEY": "YOUR_API_KEY",
         "Accept": "application/json, text/event-stream"
       }
+    },
+    "gh_grep": {
+      "httpUrl": "https://mcp.grep.app"
     }
   }
 }
