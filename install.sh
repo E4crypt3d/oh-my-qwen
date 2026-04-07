@@ -147,9 +147,10 @@ settings_path = '$QWEN_DIR/settings.json'
 with open(settings_path) as f:
     settings = json.load(f)
 settings['mcpServers'] = {
-'context7': {
+    'context7': {
         'httpUrl': 'https://mcp.context7.com/mcp',
         'headers': {
+            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
             'Accept': 'application/json, text/event-stream'
         }
     },
@@ -157,6 +158,7 @@ settings['mcpServers'] = {
         'httpUrl': 'https://mcp.grep.app'
     }
 }
+settings.setdefault('mcp', {}).setdefault('excluded', []).append('context7')
 
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
@@ -194,6 +196,7 @@ settings['mcpServers'] = {
     'context7': {
         'httpUrl': 'https://mcp.context7.com/mcp',
         'headers': {
+            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
             'Accept': 'application/json, text/event-stream'
         }
     },
@@ -201,6 +204,7 @@ settings['mcpServers'] = {
         'httpUrl': 'https://mcp.grep.app'
     }
 }
+settings.setdefault('mcp', {}).setdefault('excluded', []).append('context7')
 
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
@@ -232,12 +236,18 @@ else
     "context7": {
       "httpUrl": "https://mcp.context7.com/mcp",
       "headers": {
+        "CONTEXT7_API_KEY": "YOUR_API_KEY",
         "Accept": "application/json, text/event-stream"
       }
     },
     "gh_grep": {
       "httpUrl": "https://mcp.grep.app"
     }
+  },
+  "mcp": {
+    "excluded": [
+      "context7"
+    ]
   }
 }
 SETTINGS_EOF
@@ -266,6 +276,8 @@ settings_path = '$QWEN_DIR/settings.json'
 with open(settings_path) as f:
     settings = json.load(f)
 settings['mcpServers']['context7']['headers']['CONTEXT7_API_KEY'] = '$CONTEXT7_API_KEY'
+if 'mcp' in settings and 'excluded' in settings['mcp']:
+    settings['mcp']['excluded'] = [x for x in settings['mcp']['excluded'] if x != 'context7']
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
@@ -273,7 +285,22 @@ with open(settings_path, 'w') as f:
     pass "Context7 API key configured"
   fi
 else
-  info "Using Context7 free tier (no API key required)"
+  $PYTHON_CMD -c "
+import json
+settings_path = '$QWEN_DIR/settings.json'
+with open(settings_path) as f:
+    settings = json.load(f)
+if 'mcp' not in settings:
+    settings['mcp'] = {}
+if 'excluded' not in settings['mcp']:
+    settings['mcp']['excluded'] = []
+if 'context7' not in settings['mcp']['excluded']:
+    settings['mcp']['excluded'].append('context7')
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2)
+    f.write('\n')
+"
+  info "Context7 excluded (no API key) - add key later to enable"
 fi
 
 info "Writing QWEN.md global context..."
