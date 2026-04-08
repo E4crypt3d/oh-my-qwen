@@ -42,6 +42,12 @@ if command -v python3 &>/dev/null; then
   PYTHON_CMD="python3"
 elif command -v python &>/dev/null; then
   PYTHON_CMD="python"
+elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$(uname)" == *MINGW* ]]; then
+  echo -e "${RED}✗ Python not found on Windows. Install Python from:${NC}"
+  echo "  https://www.python.org/downloads/"
+  echo ""
+  echo "  Or via winget: winget install Python.Python.3.11"
+  exit 1
 else
   echo -e "${RED}✗ Python not found. Install Python 3.6+ first.${NC}"
   exit 1
@@ -120,6 +126,7 @@ pass "$SCRIPT_COUNT scripts installed"
 
 info "Configuring settings.json..."
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
+  echo "    Checking existing settings.json..."
   CHECK_RESULT=$($PYTHON_CMD -c "
 import json
 try:
@@ -136,7 +143,14 @@ try:
         print('missing')
 except Exception as e:
     print('error')
-" 2>/dev/null || echo "error")
+" 2>&1)
+
+  if [[ -z "$CHECK_RESULT" || "$CHECK_RESULT" == "error" ]]; then
+    warn "Could not parse settings.json — may be corrupted"
+    echo "    Run: mv ~/.qwen/settings.json ~/.qwen/settings.json.broken"
+    echo "    Then re-run install.sh"
+    exit 1
+  fi
 
   if [[ "$CHECK_RESULT" == "both" ]]; then
     warn "modelProviders and mcpServers already configured — skipping"
@@ -163,7 +177,11 @@ settings.setdefault('mcp', {}).setdefault('excluded', []).append('context7')
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
-"
+" 2>&1)
+    if [[ $? -ne 0 ]]; then
+        warn "Failed to add mcpServers to settings.json"
+        exit 1
+    fi
     pass "mcpServers added to existing settings.json"
   elif [[ "$CHECK_RESULT" == "mcps" ]]; then
     $PYTHON_CMD -c "
@@ -209,7 +227,11 @@ settings.setdefault('mcp', {}).setdefault('excluded', []).append('context7')
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
-" 2>/dev/null
+" 2>&1)
+    if [[ $? -ne 0 ]]; then
+        warn "Failed to configure qwen-oauth in settings.json"
+        exit 1
+    fi
     pass "qwen-oauth modelProviders configured"
   fi
 else
@@ -281,8 +303,12 @@ if 'mcp' in settings and 'excluded' in settings['mcp']:
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
-"
-    pass "Context7 API key configured"
+" 2>&1
+    if [[ $? -eq 0 ]]; then
+        pass "Context7 API key configured"
+    else
+        warn "Failed to configure Context7 API key"
+    fi
   fi
 else
   $PYTHON_CMD -c "
@@ -299,7 +325,7 @@ if 'context7' not in settings['mcp']['excluded']:
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
-"
+" 2>&1
   info "Context7 excluded (no API key) - add key later to enable"
 fi
 
