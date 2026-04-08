@@ -21,19 +21,23 @@ echo ""
 
 QWEN_DIR="$HOME/.qwen"
 
-if command -v python3 &>/dev/null; then
-  PYTHON_CMD="python3"
-elif command -v python &>/dev/null; then
-  PYTHON_CMD="python"
-else
-  fail "Python not found — install Python 3.6+"
+PYTHON_CMD=""
+for candidate in "python3" "python" "py -3" "/c/Windows/py.exe -3" "py.exe -3"; do
+  if eval "$candidate -c 'import sys; sys.exit(0)'" >/dev/null 2>&1; then
+    PYTHON_CMD="$candidate"
+    break
+  fi
+done
+
+if [[ -z "$PYTHON_CMD" ]]; then
+  fail "Python not found — install Python 3.6+ or ensure 'py -3' is available"
 fi
 
 # 1. Check auth type is qwen-oauth
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
   AUTH_TYPE=$($PYTHON_CMD -c "
-import json
-d = json.load(open('$QWEN_DIR/settings.json'))
+import json, os
+d = json.load(open(os.path.expanduser('~/.qwen/settings.json')))
 print(d.get('security',{}).get('auth',{}).get('selectedType', 'none'))
 " 2>/dev/null || echo "none")
 
@@ -49,14 +53,14 @@ fi
 # 2. Check modelProviders configured correctly
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
   PROVIDER_INFO=$($PYTHON_CMD -c "
-import json, sys
-d = json.load(open('$QWEN_DIR/settings.json'))
+import json, os, sys
+d = json.load(open(os.path.expanduser('~/.qwen/settings.json')))
 providers = d.get('modelProviders', {})
 qwen = providers.get('qwen-oauth', [])
 if not qwen:
     sys.exit(1)
 models = [m.get('id', '?') for m in qwen]
-print(f'{len(qwen)} models: {', '.join(models)}')
+print(f\"{len(qwen)} models: {', '.join(models)}\")
 " 2>/dev/null)
 
   if [[ -n "$PROVIDER_INFO" ]]; then
@@ -68,9 +72,9 @@ fi
 
 # 3. Check oh-my-qwen.json helper config
 if [[ -f "$QWEN_DIR/oh-my-qwen.json" ]]; then
-  if $PYTHON_CMD -c "import json; json.load(open('$QWEN_DIR/oh-my-qwen.json'))" 2>/dev/null; then
+  if $PYTHON_CMD -c "import json, os; json.load(open(os.path.expanduser('~/.qwen/oh-my-qwen.json')))" 2>/dev/null; then
     pass "oh-my-qwen.json valid"
-    AGENT_COUNT=$($PYTHON_CMD -c "import json; d=json.load(open('$QWEN_DIR/oh-my-qwen.json')); print(len(d.get('agents',{})))" 2>/dev/null || echo 0)
+    AGENT_COUNT=$($PYTHON_CMD -c "import json, os; d=json.load(open(os.path.expanduser('~/.qwen/oh-my-qwen.json'))); print(len(d.get('agents',{})))" 2>/dev/null || echo 0)
     pass "$AGENT_COUNT agents configured"
   else
     fail "oh-my-qwen.json has invalid JSON"

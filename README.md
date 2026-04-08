@@ -22,6 +22,21 @@ qwen
 
 That's it. Everything is configured.
 
+## Windows Notes (Important)
+
+- If `python`/`python3` points to Microsoft Store aliases, installer scripts now auto-fallback to `py -3`.
+- Quick check:
+
+```bash
+py -3 --version
+```
+
+- Then install with Git Bash:
+
+```bash
+bash install.sh
+```
+
 ## What You Get
 
 ### 12 Specialized Subagents
@@ -71,10 +86,17 @@ oh-my-qwen includes **Context7 MCP** for up-to-date documentation and code examp
 
 **Setup:**
 1. (Optional) Get your Context7 API key from [context7.com](https://context7.com) for higher limits
-2. Edit `~/.qwen/oh-my-qwen.json` and replace `YOUR_API_KEY` with your key (or leave as-is for free tier)
+2. Edit `~/.qwen/settings.json` and set `mcpServers.context7.headers.CONTEXT7_API_KEY` to your key
 3. Restart Qwen Code
 
 The librarian agent will automatically use Context7 to fetch docs and code examples for any library.
+
+### No-API-Key Mode (Recommended default)
+
+- For normal usage, you do **not** need any API key.
+- During install, when asked `Do you have a Context7 API key? (y/N):` choose `N`.
+- This keeps Context7 excluded and the rest of oh-my-qwen runs on `qwen-oauth` free tier.
+- If you accidentally choose `y` but leave it blank, no key is saved.
 
 ### Grep by Vercel MCP (Built-in)
 

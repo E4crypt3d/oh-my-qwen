@@ -38,12 +38,16 @@ fi
 QWEN_VER=$(qwen --version 2>/dev/null || echo "unknown")
 info "qwen detected: $QWEN_VER"
 
-if command -v python3 &>/dev/null; then
-  PYTHON_CMD="python3"
-elif command -v python &>/dev/null; then
-  PYTHON_CMD="python"
-else
-  echo -e "${RED}✗ Python not found. Install Python 3.6+ first.${NC}"
+PYTHON_CMD=""
+for candidate in "python3" "python" "py -3" "/c/Windows/py.exe -3" "py.exe -3"; do
+  if eval "$candidate -c 'import sys; sys.exit(0)'" >/dev/null 2>&1; then
+    PYTHON_CMD="$candidate"
+    break
+  fi
+done
+
+if [[ -z "$PYTHON_CMD" ]]; then
+  echo -e "${RED}✗ Python not found. Install Python 3.6+ (or ensure 'py -3' works) and try again.${NC}"
   exit 1
 fi
 info "Python detected: $PYTHON_CMD"
@@ -121,9 +125,9 @@ pass "$SCRIPT_COUNT scripts installed"
 info "Configuring settings.json..."
 if [[ -f "$QWEN_DIR/settings.json" ]]; then
   CHECK_RESULT=$($PYTHON_CMD -c "
-import json
+import json, os
 try:
-    d = json.load(open('$QWEN_DIR/settings.json'))
+    d = json.load(open(os.path.expanduser('~/.qwen/settings.json')))
     has_providers = 'modelProviders' in d and d['modelProviders']
     has_mcps = 'mcpServers' in d and d['mcpServers']
     if has_providers and has_mcps:
@@ -142,17 +146,13 @@ except Exception as e:
     warn "modelProviders and mcpServers already configured — skipping"
   elif [[ "$CHECK_RESULT" == "providers" ]]; then
     $PYTHON_CMD -c "
-import json
-settings_path = '$QWEN_DIR/settings.json'
+import json, os
+settings_path = os.path.expanduser('~/.qwen/settings.json')
 with open(settings_path) as f:
     settings = json.load(f)
 settings['mcpServers'] = {
     'context7': {
-        'httpUrl': 'https://mcp.context7.com/mcp',
-        'headers': {
-            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
-            'Accept': 'application/json, text/event-stream'
-        }
+        'httpUrl': 'https://mcp.context7.com/mcp'
     },
     'gh_grep': {
         'httpUrl': 'https://mcp.grep.app'
@@ -167,8 +167,8 @@ with open(settings_path, 'w') as f:
     pass "mcpServers added to existing settings.json"
   elif [[ "$CHECK_RESULT" == "mcps" ]]; then
     $PYTHON_CMD -c "
-import json
-settings_path = '$QWEN_DIR/settings.json'
+import json, os
+settings_path = os.path.expanduser('~/.qwen/settings.json')
 try:
     with open(settings_path) as f:
         settings = json.load(f)
@@ -194,11 +194,7 @@ settings['model']['name'] = 'coder-model'
 
 settings['mcpServers'] = {
     'context7': {
-        'httpUrl': 'https://mcp.context7.com/mcp',
-        'headers': {
-            'CONTEXT7_API_KEY': 'YOUR_API_KEY',
-            'Accept': 'application/json, text/event-stream'
-        }
+        'httpUrl': 'https://mcp.context7.com/mcp'
     },
     'gh_grep': {
         'httpUrl': 'https://mcp.grep.app'
@@ -211,6 +207,43 @@ with open(settings_path, 'w') as f:
     f.write('\n')
 " 2>/dev/null
     pass "qwen-oauth modelProviders configured"
+  else
+    warn "settings.json parse failed — rebuilding with qwen-oauth defaults"
+    cat > "$QWEN_DIR/settings.json" << 'SETTINGS_EOF'
+{
+  "security": {
+    "auth": {
+      "selectedType": "qwen-oauth"
+    }
+  },
+  "model": {
+    "name": "coder-model"
+  },
+  "modelProviders": {
+    "qwen-oauth": [
+      {
+        "id": "coder-model",
+        "name": "Qwen Coder Model",
+        "description": "Primary coder model via Qwen OAuth free tier (1,000 req/day)"
+      }
+    ]
+  },
+  "mcpServers": {
+    "context7": {
+      "httpUrl": "https://mcp.context7.com/mcp"
+    },
+    "gh_grep": {
+      "httpUrl": "https://mcp.grep.app"
+    }
+  },
+  "mcp": {
+    "excluded": [
+      "context7"
+    ]
+  }
+}
+SETTINGS_EOF
+    pass "settings.json repaired with qwen-oauth defaults"
   fi
 else
   cat > "$QWEN_DIR/settings.json" << 'SETTINGS_EOF'
@@ -234,11 +267,7 @@ else
   },
   "mcpServers": {
     "context7": {
-      "httpUrl": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "YOUR_API_KEY",
-        "Accept": "application/json, text/event-stream"
-      }
+      "httpUrl": "https://mcp.context7.com/mcp"
     },
     "gh_grep": {
       "httpUrl": "https://mcp.grep.app"
@@ -258,6 +287,23 @@ info "Writing oh-my-qwen.json..."
 cp "$SCRIPT_DIR/oh-my-qwen.json" "$QWEN_DIR/oh-my-qwen.json"
 pass "oh-my-qwen.json configured (including Context7 MCP)"
 
+info "Sanitizing placeholder Context7 key (if present)..."
+$PYTHON_CMD -c "
+import json, os
+settings_path = os.path.expanduser('~/.qwen/settings.json')
+with open(settings_path) as f:
+    settings = json.load(f)
+headers = settings.get('mcpServers', {}).get('context7', {}).get('headers')
+if isinstance(headers, dict) and headers.get('CONTEXT7_API_KEY') == 'YOUR_API_KEY':
+    headers.pop('CONTEXT7_API_KEY', None)
+    if not headers:
+        settings.get('mcpServers', {}).get('context7', {}).pop('headers', None)
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2)
+    f.write('\n')
+"
+pass "Placeholder key removed"
+
 echo ""
 echo -e "${CYAN}────────────────────────────────────────${NC}"
 echo -e "${CYAN}  Context7 MCP Configuration (optional) ${NC}"
@@ -271,11 +317,15 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   read -p "  Enter your Context7 API key: " CONTEXT7_API_KEY
   if [[ -n "$CONTEXT7_API_KEY" ]]; then
     $PYTHON_CMD -c "
-import json
-settings_path = '$QWEN_DIR/settings.json'
+import json, os
+settings_path = os.path.expanduser('~/.qwen/settings.json')
 with open(settings_path) as f:
     settings = json.load(f)
-settings['mcpServers']['context7']['headers']['CONTEXT7_API_KEY'] = '$CONTEXT7_API_KEY'
+settings.setdefault('mcpServers', {}).setdefault('context7', {})['httpUrl'] = 'https://mcp.context7.com/mcp'
+settings['mcpServers']['context7']['headers'] = {
+    'CONTEXT7_API_KEY': '$CONTEXT7_API_KEY',
+    'Accept': 'application/json, text/event-stream'
+}
 if 'mcp' in settings and 'excluded' in settings['mcp']:
     settings['mcp']['excluded'] = [x for x in settings['mcp']['excluded'] if x != 'context7']
 with open(settings_path, 'w') as f:
@@ -286,8 +336,8 @@ with open(settings_path, 'w') as f:
   fi
 else
   $PYTHON_CMD -c "
-import json
-settings_path = '$QWEN_DIR/settings.json'
+import json, os
+settings_path = os.path.expanduser('~/.qwen/settings.json')
 with open(settings_path) as f:
     settings = json.load(f)
 if 'mcp' not in settings:

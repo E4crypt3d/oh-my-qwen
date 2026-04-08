@@ -8,12 +8,16 @@ NC='\033[0m'
 CONFIG="$HOME/.qwen/oh-my-qwen.json"
 SETTINGS="$HOME/.qwen/settings.json"
 
-if command -v python3 &>/dev/null; then
-  PYTHON_CMD="python3"
-elif command -v python &>/dev/null; then
-  PYTHON_CMD="python"
-else
-  echo "Error: Python not found"
+PYTHON_CMD=""
+for candidate in "python3" "python" "py -3" "/c/Windows/py.exe -3" "py.exe -3"; do
+  if eval "$candidate -c 'import sys; sys.exit(0)'" >/dev/null 2>&1; then
+    PYTHON_CMD="$candidate"
+    break
+  fi
+done
+
+if [[ -z "$PYTHON_CMD" ]]; then
+  echo "Error: Python not found (install Python 3.6+ or ensure 'py -3' works)"
   exit 1
 fi
 
@@ -24,8 +28,8 @@ echo ""
 echo -e "${GREEN}── Model Providers (settings.json) ───────────────${NC}"
 if [[ -f "$SETTINGS" ]]; then
   $PYTHON_CMD -c "
-import json
-settings = json.load(open('$SETTINGS'))
+import json, os
+settings = json.load(open(os.path.expanduser('~/.qwen/settings.json')))
 providers = settings.get('modelProviders', {})
 for auth_type, models in providers.items():
     print(f'  [{auth_type}]')
@@ -46,8 +50,8 @@ if [[ -f "$CONFIG" ]]; then
   printf "  %-20s %-30s %s\n" "────────────────────" "──────────────────────────────" "──────────────────"
 
   $PYTHON_CMD -c "
-import json
-config = json.load(open('$CONFIG'))
+import json, os
+config = json.load(open(os.path.expanduser('~/.qwen/oh-my-qwen.json')))
 for name, agent in config.get('agents', {}).items():
     model = agent.get('model', 'N/A').replace('qwen/', '')
     desc = agent.get('description', '')[:30]
@@ -63,8 +67,8 @@ if [[ -f "$CONFIG" ]]; then
   printf "  %-20s %-30s %s\n" "────────────────────" "──────────────────────────────" "──────────────────"
 
   $PYTHON_CMD -c "
-import json
-config = json.load(open('$CONFIG'))
+import json, os
+config = json.load(open(os.path.expanduser('~/.qwen/oh-my-qwen.json')))
 for name, cat in config.get('categories', {}).items():
     model = cat.get('model', 'N/A').replace('qwen/', '')
     fallback = ' → '.join(f.replace('qwen/', '') for f in cat.get('fallback', ['(none)']))
