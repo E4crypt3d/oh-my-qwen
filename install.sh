@@ -177,7 +177,7 @@ settings.setdefault('mcp', {}).setdefault('excluded', []).append('context7')
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
-" 2>&1)
+" 2>&1
     if [[ $? -ne 0 ]]; then
         warn "Failed to add mcpServers to settings.json"
         exit 1
@@ -227,7 +227,7 @@ settings.setdefault('mcp', {}).setdefault('excluded', []).append('context7')
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
-" 2>&1)
+" 2>&1
     if [[ $? -ne 0 ]]; then
         warn "Failed to configure qwen-oauth in settings.json"
         exit 1
