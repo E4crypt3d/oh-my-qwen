@@ -1,4 +1,9 @@
-# Skill: Documentation
+---
+name: documentation
+description: Create and maintain high-quality documentation using the librarian subagent. Use when writing docs, READMEs, API documentation, code summaries, or any text-based artifacts.
+---
+
+# Documentation
 
 **Trigger:** Use when writing docs, READMEs, API documentation, code summaries,
 or any text-based artifacts. Or when user says "document", "write docs", "README",

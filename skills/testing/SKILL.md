@@ -1,4 +1,9 @@
-# Skill: Testing
+---
+name: testing
+description: Comprehensive test creation using TDD principles. Use when writing tests, improving coverage, fixing failing tests, or setting up test infrastructure.
+---
+
+# Testing
 
 **Trigger:** Use when writing tests, improving coverage, fixing failing tests,
 or setting up test infrastructure. Or when user says "test", "write tests",

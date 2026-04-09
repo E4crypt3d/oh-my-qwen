@@ -1,4 +1,9 @@
-# Skill: Code Review
+---
+name: code-review
+description: Systematic code review with structured output and actionable findings. Use when reviewing code, auditing quality, checking for bugs, security vulnerabilities, or performance issues.
+---
+
+# Code Review
 
 **Trigger:** Use after implementation, or when the user says "review", "audit",
 "check this code", "security review", or mentions code quality.

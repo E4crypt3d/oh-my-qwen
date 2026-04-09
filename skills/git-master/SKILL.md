@@ -1,4 +1,9 @@
-# Skill: Git Master
+---
+name: git-master
+description: Atomic commits, rebase surgery, history search, and safe git operations. Use when committing, rebasing, squashing, searching git history, or performing any git operations.
+---
+
+# Git Master
 
 **Trigger:** "commit", "rebase", "squash", "who wrote", "when was X added", "find the commit that", "git log", "git blame", or any git operation.
 

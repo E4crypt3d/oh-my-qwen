@@ -1,4 +1,9 @@
-# Skill: Frontend UI/UX
+---
+name: frontend-ui-ux
+description: Design-first frontend development with modern UI/UX principles. Use when working on design, UI, styling, layout, CSS, responsive design, animations, components, or frontend visual tasks.
+---
+
+# Frontend UI/UX
 
 **Trigger:** "design", "UI", "style", "layout", "CSS", "responsive", "animation", "component", "frontend", "redesign", or any visual/frontend task.
 

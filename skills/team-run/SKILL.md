@@ -1,4 +1,9 @@
-# Skill: Team Run
+---
+name: team-run
+description: Orchestrate multiple specialized subagents in a coordinated workflow. Use when running multiple agents together, delegating to agents, or executing complex multi-agent pipelines.
+---
+
+# Team Run
 
 **Trigger:** Use `/team` or when the user mentions running multiple agents together,
 or asks to "use the team", "run agents", "delegate to agents".

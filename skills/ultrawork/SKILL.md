@@ -1,4 +1,9 @@
-# Skill: Ultrawork
+---
+name: ultrawork
+description: Parallel, multi-subagent execution for complex tasks with 3+ sub-tasks. Automatically decomposes requests, delegates to specialized agents, executes in parallel, and aggregates results with verification.
+---
+
+# Ultrawork
 
 **Trigger:** Include `ultrawork` or `ulw` in your prompt.
 

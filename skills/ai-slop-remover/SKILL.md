@@ -1,4 +1,9 @@
-# Skill: AI Slop Remover
+---
+name: ai-slop-remover
+description: Remove AI-generated code smells and patterns from code. Use when cleaning up AI-generated code, removing over-commenting, simplifying verbose patterns, or making code look like a senior engineer wrote it.
+---
+
+# AI Slop Remover
 
 **Trigger:** "clean up AI code", "remove AI slop", "make this look human", "review for AI patterns", or after AI-generated code needs polishing.
 
